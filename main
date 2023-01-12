@@ -1,0 +1,88 @@
+-- 1. CREATE TABLES
+
+CREATE TABLE COFFEE_SHOP (
+ shop_id INT,
+ shop_name VARCHAR(50),
+ city VARCHAR(50),
+ state CHAR(2),
+ primary key (shop_id)
+);
+
+CREATE TABLE SUPPLIER (
+ supplier_id INT,
+ company_name VARCHAR(50),
+ country VARCHAR(30),
+ sales_contact_name VARCHAR(60),
+ email VARCHAR(50) NOT NULL,
+ primary key (supplier_id)
+);
+
+CREATE TABLE EMPLOYEE (
+ employee_id INT,
+ first_name VARCHAR(30),
+ last_name VARCHAR(30),
+ hire_date DATE,
+ job_title VARCHAR(30),
+ shop_id INT,
+ primary key (employee_id),
+ foreign key (shop_id) REFERENCES COFFEE_SHOP (shop_id)
+);
+
+CREATE TABLE COFFEE (
+ coffee_id INT,
+ shop_id INT,
+ supplier_id INT,
+ coffee_name VARCHAR(30),
+ price_per_pound FLOAT (5,2),
+ primary key (coffee_id),
+ foreign key (shop_id) REFERENCES COFFEE_SHOP (shop_id),
+ foreign key (supplier_id) REFERENCES SUPPLIER (supplier_id)
+);
+
+-- 2. POPULATE EACH TABLE
+
+INSERT INTO COFFEE_SHOP VALUES
+ (1, 'Starbucks', 'Seattle', 'WA'),
+ (2, 'Dutch Bros', 'Las Vegas', 'NV'),
+ (3, 'Cafe Elite', 'Tacoma', 'WA');
+ 
+INSERT INTO SUPPLIER VALUES
+ (10, 'Amazon', 'USA', 'Jeff Bezos', 'Jeff@amazon.com'),
+ (20, 'UPS', 'USA', 'Kurt VanSlate', 'VanSlate@UPS.com'),
+ (30, 'Fedex', 'USA', 'Axel Rose', 'Rose@gmail.com');
+ 
+INSERT INTO EMPLOYEE VALUES
+ (225, 'Aubrey', 'Quintana', '2010-07-23', 'Barista', 3),
+ (345, 'Tayler', 'Truman', '2014-12-26', 'Receiving', 1),
+ (163, 'Michelle', 'VanSlate', '2018-10-22', 'Cashier', 2);
+ 
+INSERT INTO COFFEE VALUES
+ (1, 1, 10, 'Chai Tea Latte', 3.99),
+ (2, 2, 20, 'Folgers', 1.99),
+ (3, 3, 30, 'Decaf Medium Roast', 2.50);
+ 
+-- 3. CREATE A VIEW
+
+CREATE VIEW COFFEEVIEW
+AS SELECT employee_id, concat(first_name, ' ', last_name) AS employee_full_name, hire_date, job_title, shop_id
+FROM EMPLOYEE;
+
+-- 4. CREATE AN INDEX
+
+CREATE INDEX COFFEENAME
+ON COFFEE (coffee_name);
+
+-- 5. CREATE A SELECT-FROM-WHERE QUERY
+
+SELECT first_name, last_name, hire_date, job_title
+FROM EMPLOYEE
+WHERE first_name = 'Aubrey';
+
+-- 6. CREATE A TABLE JOIN QUERY
+
+SELECT *
+FROM EMPLOYEE
+JOIN COFFEE_SHOP
+ON EMPLOYEE.shop_id = COFFEE_SHOP.shop_id
+JOIN COFFEE
+ON COFFEE_SHOP.shop_id = COFFEE.shop_id;
